@@ -28,6 +28,8 @@ using Microsoft.IdentityModel.Tokens;
 using Conductor.Auth;
 using Conductor.Middleware;
 using Microsoft.OpenApi.Models;
+using MassTransit;
+using Conductor.Consumers;
 
 namespace Conductor
 {
@@ -40,7 +42,7 @@ namespace Conductor
         }
 
         public IConfiguration Configuration { get; }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             var dbConnectionStr = EnvironmentVariables.DbHost;
@@ -57,15 +59,15 @@ namespace Conductor
                 authEnabled = Configuration.GetSection("Auth").GetValue<bool>("Enabled");
             else
                 authEnabled = Convert.ToBoolean(authEnabledStr);
-            
+
 
             services.AddMvc(options =>
             {
-                options.InputFormatters.Add(new YamlRequestBodyInputFormatter());                
+                options.InputFormatters.Add(new YamlRequestBodyInputFormatter());
                 options.OutputFormatters.Add(new YamlRequestBodyOutputFormatter());
                 options.Filters.Add<RequestObjectFilter>();
                 options.Filters.Add<ExceptionCodeFilter>();
-                options.EnableEndpointRouting = false;                
+                options.EnableEndpointRouting = false;
             })
             .AddNewtonsoftJson()
             .SetCompatibilityVersion(CompatibilityVersion.Latest);
@@ -80,7 +82,7 @@ namespace Conductor
             });
 
             var authConfig = services.AddAuthentication(options =>
-            {                
+            {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             });
@@ -118,6 +120,17 @@ namespace Conductor
 
             services.AddSingleton<IMapper>(x => new Mapper(config));
 
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<CreateDefinitionConsumer>();
+                x.SetKebabCaseEndpointNameFormatter();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
+            services.AddMassTransitHostedService();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -132,12 +145,12 @@ namespace Conductor
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
             }
-                        
+
             app.UseAuthentication();
             //app.UseHttpsRedirection();
             app.UseMvc(cfg =>
             {
-              //  cfg.
+                //  cfg.
             });
             app.UseRouting();
             //app.UseMvcWithDefaultRoute();

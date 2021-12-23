@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Conductor.Auth;
 using Conductor.Domain.Interfaces;
 using Conductor.Domain.Models;
+using Conductor.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MassTransit;
 
 namespace Conductor.Controllers
 {
@@ -16,10 +18,12 @@ namespace Conductor.Controllers
     public class DefinitionController : ControllerBase
     {
         private readonly IDefinitionService _service;
+        readonly IPublishEndpoint _publishEndpoint;
 
-        public DefinitionController(IDefinitionService service)
+        public DefinitionController(IDefinitionService service, IPublishEndpoint publishEndpoint)
         {
             _service = service;
+            _publishEndpoint = publishEndpoint;
         }
 
         [HttpGet]
@@ -43,12 +47,18 @@ namespace Conductor.Controllers
 
         [HttpPost]
         [Authorize(Policy = Policies.Author)]
-        public void Post([FromBody] Definition value)
+        public ActionResult Post([FromBody] Definition value)
         {
-            _service.RegisterNewDefinition(value);
-            Response.StatusCode = 204;
+            Task.Run(async () =>
+            {
+                await _publishEndpoint.Publish<CreateDefinition>(new
+                {
+                    Definition = value
+                });
+            });
+            return NoContent();
         }
-                
+
         //[HttpPut]
         //public void Put([FromBody] string value)
         //{

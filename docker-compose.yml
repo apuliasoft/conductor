@@ -9,17 +9,41 @@ services:
       - "5001:80"
     links:
       - mongo
-      - redis
+      # - redis
+      - rabbitmq
     environment:
       dbhost: mongodb://mongo:27017/
-      redis: redis
+      # redis: redis
+
+  # conductor2:
+  #   build:
+  #     context: ./
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5002:80"
+  #   links:
+  #     - mongo
+  #     - redis
+  #     - rabbitmq
+  #   environment:
+  #     dbhost: mongodb://mongo:27017/
+  #     redis: redis
 
   mongo:
     image: mongo
     ports:
       - "27017:27017"
 
-  redis:
-    image: "redis:alpine"
+  # redis:
+  #   image: "redis:alpine"
+  #   ports:
+  #     - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
     ports:
-      - "6379:6379"
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
