@@ -53,6 +53,10 @@ namespace Conductor
             if (string.IsNullOrEmpty(redisConnectionStr))
                 redisConnectionStr = Configuration.GetValue<string>("RedisConnectionString");
 
+            var rabbitConnectionStr = EnvironmentVariables.RabbitMQ;
+            if (string.IsNullOrEmpty(rabbitConnectionStr))
+                rabbitConnectionStr = Configuration.GetValue<string>("RabbitConnectionString");
+
             var authEnabled = false;
             var authEnabledStr = EnvironmentVariables.Auth;
             if (string.IsNullOrEmpty(authEnabledStr))
@@ -120,17 +124,22 @@ namespace Conductor
 
             services.AddSingleton<IMapper>(x => new Mapper(config));
 
-            services.AddMassTransit(x =>
+            if (!string.IsNullOrEmpty(rabbitConnectionStr))
             {
-                x.AddConsumer<CreateDefinitionConsumer>();
-                x.SetKebabCaseEndpointNameFormatter();
 
-                x.UsingRabbitMq((context, cfg) =>
+                services.AddMassTransit(x =>
                 {
-                    cfg.ConfigureEndpoints(context);
+                    x.AddConsumer<CreateDefinitionConsumer>();
+                    x.SetKebabCaseEndpointNameFormatter();
+
+                    x.UsingRabbitMq((context, cfg) =>
+                    {
+                        cfg.Host(rabbitConnectionStr);
+                        cfg.ConfigureEndpoints(context);
+                    });
                 });
-            });
-            services.AddMassTransitHostedService();
+                services.AddMassTransitHostedService();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

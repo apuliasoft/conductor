@@ -14,6 +14,8 @@ services:
     environment:
       dbhost: mongodb://mongo:27017/
       # redis: redis
+      rabbitmq: amqp://rabbitmq:5672/
+
 
   # conductor2:
   #   build:
