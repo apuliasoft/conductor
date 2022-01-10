@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Conductor.Domain.Interfaces;
 using MassTransit;
-using Conductor.Contracts;
+using Conductor.AMQP.Contracts;
 
-namespace Conductor.Consumers
+namespace Conductor.AMQP.Consumers
 {
     class CreateDefinitionConsumer : IConsumer<CreateDefinition>
     {

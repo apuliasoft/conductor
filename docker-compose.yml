@@ -1,45 +1,91 @@
 version: "3"
 
 services:
-  conductor:
+  conductor1:
     build:
       context: ./
       dockerfile: Dockerfile
+    depends_on:
+      - mongo
+      - redis
+      - rabbitmq
     ports:
       - "5001:80"
     links:
       - mongo
-      # - redis
+      - redis
       - rabbitmq
     environment:
       dbhost: mongodb://mongo:27017/
-      # redis: redis
+      redis: redis
       rabbitmq: amqp://rabbitmq:5672/
 
+  conductor2:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo
+      - redis
+      - rabbitmq
+    ports:
+      - "5002:80"
+    links:
+      - mongo
+      - redis
+      - rabbitmq
+    environment:
+      dbhost: mongodb://mongo:27017/
+      redis: redis
+      rabbitmq: amqp://rabbitmq:5672/
 
-  # conductor2:
-  #   build:
-  #     context: ./
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "5002:80"
-  #   links:
-  #     - mongo
-  #     - redis
-  #     - rabbitmq
-  #   environment:
-  #     dbhost: mongodb://mongo:27017/
-  #     redis: redis
+  conductor3:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo
+      - redis
+      - rabbitmq
+    ports:
+      - "5003:80"
+    links:
+      - mongo
+      - redis
+      - rabbitmq
+    environment:
+      dbhost: mongodb://mongo:27017/
+      redis: redis
+      rabbitmq: amqp://rabbitmq:5672/
+
+  conductor4:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo
+      - redis
+      - rabbitmq
+    ports:
+      - "5004:80"
+    links:
+      - mongo
+      - redis
+      - rabbitmq
+    environment:
+      dbhost: mongodb://mongo:27017/
+      redis: redis
+      rabbitmq: amqp://rabbitmq:5672/
 
   mongo:
     image: mongo
     ports:
       - "27017:27017"
 
-  # redis:
-  #   image: "redis:alpine"
-  #   ports:
-  #     - "6379:6379"
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
 
   rabbitmq:
     image: rabbitmq:3-management-alpine

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Conductor.Domain;
 using Conductor.Domain.Interfaces;
 using Conductor.Domain.Scripting;
 using Conductor.Domain.Services;
 using Conductor.Formatters;
-using Conductor.Mappings;
 using Conductor.Steps;
 using Conductor.Storage;
 using Microsoft.AspNetCore.Builder;
@@ -18,18 +14,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using WorkflowCore.Interface;
-using Newtonsoft.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Security.Cryptography;
-using Microsoft.IdentityModel.Tokens;
 using Conductor.Auth;
 using Conductor.Middleware;
 using Microsoft.OpenApi.Models;
 using MassTransit;
-using Conductor.Consumers;
+using Conductor.AMQP.Consumers;
+using Conductor.Mappings;
 
 namespace Conductor
 {
@@ -126,10 +119,12 @@ namespace Conductor
 
             if (!string.IsNullOrEmpty(rabbitConnectionStr))
             {
-
                 services.AddMassTransit(x =>
                 {
                     x.AddConsumer<CreateDefinitionConsumer>();
+                    x.AddConsumer<StartWorkflowConsumer>();
+                    x.AddConsumer<PublishEventConsumer>();
+
                     x.SetKebabCaseEndpointNameFormatter();
 
                     x.UsingRabbitMq((context, cfg) =>
@@ -139,6 +134,7 @@ namespace Conductor
                     });
                 });
                 services.AddMassTransitHostedService();
+                services.AddHostedService<ActivityWorker>();
             }
         }
 

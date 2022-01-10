@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conductor", "src\Conductor\Conductor.csproj", "{BC743A97-4ACF-4189-96B7-02FD9B140841}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor", "src\Conductor\Conductor.csproj", "{BC743A97-4ACF-4189-96B7-02FD9B140841}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conductor.Domain", "src\Conductor.Domain\Conductor.Domain.csproj", "{17322103-FD01-472B-A33E-4A955460351B}"
 EndProject
@@ -25,6 +25,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScratchPad", "tests\ScratchPad\ScratchPad.csproj", "{45D807EA-1D48-4356-9BA2-E93C6A791F3C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conductor.Domain.Scripting", "src\Conductor.Domain.Scripting\Conductor.Domain.Scripting.csproj", "{8DD6BFDB-3050-4E99-953F-B4B6B4667199}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.AMQP.Contracts", "src\Conductor.AMQP.Contracts\Conductor.AMQP.Contracts.csproj", "{DF82BCEE-177D-410D-A67F-CEDBD2D7E1F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +66,10 @@ Global
 		{8DD6BFDB-3050-4E99-953F-B4B6B4667199}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DD6BFDB-3050-4E99-953F-B4B6B4667199}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DD6BFDB-3050-4E99-953F-B4B6B4667199}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF82BCEE-177D-410D-A67F-CEDBD2D7E1F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF82BCEE-177D-410D-A67F-CEDBD2D7E1F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF82BCEE-177D-410D-A67F-CEDBD2D7E1F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF82BCEE-177D-410D-A67F-CEDBD2D7E1F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

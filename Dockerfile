@@ -6,6 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src
 COPY src .
+RUN dotnet nuget add source https://nuget.pkg.jetbrains.space/apuliasoft/p/ama/nuget/v3/index.json -n space-nuget -u <username> -p <password> --store-password-in-clear-text
 RUN dotnet restore "Conductor/Conductor.csproj"
 COPY . .
 WORKDIR "/src/Conductor"

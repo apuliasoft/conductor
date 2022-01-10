@@ -1,6 +1,6 @@
 ﻿using Conductor.Domain.Models;
 
-namespace Conductor.Contracts
+namespace Conductor.AMQP.Contracts
 {
     public interface CreateDefinition
     {
